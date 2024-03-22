@@ -1,0 +1,4 @@
+For the data point that was recorded at (0,0) that was directly adjacent to the 0.5 value elements,
+it has been manually rewritten to (.5,.5) as there were two (0,0) points and to (.5,.5) points
+
+Presumed error in MM ellipsometry data taking at edge
