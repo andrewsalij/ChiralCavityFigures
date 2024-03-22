@@ -67,7 +67,7 @@ neg_g_factors_theory = theory_map[neg_g_theory]
 if (g_type == "g_trans"): cd_bounds = [-.1,.1]
 elif g_type== "cd": cd_bounds = [-2000,2000]
 
-fig, ax = plt.subplots(1,2)
+fig, ax = plt.subplots(1,2,figsize=(7.08,5))
 
 ax[0].matshow(map3,cmap = "bwr",vmin = cd_bounds[0],vmax = cd_bounds[1])
 image = ax[1].matshow(theory_map_scaled,cmap = "bwr",vmin = cd_bounds[0],vmax = cd_bounds[1])

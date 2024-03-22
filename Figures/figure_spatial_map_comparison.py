@@ -74,7 +74,7 @@ std_exp_factors = np.array([std_neg_g,std_pos_g])
 if (plot_style == "g_trans"):bins = list(np.linspace(-.16,.16,37))
 elif(plot_style=="cd_mdeg"):bins=  list(np.linspace(-2000,2000,41))
 
-fig= plt.figure(figsize = (7.2,6))
+fig= plt.figure(figsize = (7.08,6))
 gs = fig.add_gridspec(20, 20,
                       left=0.04, right=0.98, bottom=0.13, top=0.96,
                       wspace=0, hspace=0.02)
