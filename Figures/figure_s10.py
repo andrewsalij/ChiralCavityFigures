@@ -3,7 +3,7 @@ import berreman_mueller as bm
 import os
 import pandas as pd
 cwd = os.getcwd()
-
+fig_file_ext = ".png"
 source_dir = os.sep.join((cwd,"Source_Files","Fig_S10"))
 
 dataframe_100nm = pd.read_excel(os.sep.join((source_dir,"cd_100_nm.xlsx")),index_col = 0)
@@ -42,5 +42,5 @@ for i in range(2):
     axes[i].text(.03,.92,sub_titles[i],weight="bold",transform=axes[i].transAxes)
 
 fig.subplots_adjust(wspace = 0.1,right= .8,bottom=.15,top = .9)
-fig.savefig("ptpo_cd_comparison.pdf",dpi = 500)
+fig.savefig("ptpo_cd_comparison"+fig_file_ext,dpi = 500)
 fig.show()

@@ -9,7 +9,7 @@ import pandas as pd
 Creates SI figures for in-plane field distributions (propagated via transfer matrices)
 Data listed as (forward,backward)
 '''
-
+fig_file_ext = ".png"
 plt.rcParams.update({'font.size': 7,'axes.unicode_minus':False})
 cwd = os.getcwd()
 basedir, cur_dir= os.path.split(cwd)
@@ -53,7 +53,7 @@ field_plotting.plot_field_mesh_array(z_array, x_array, int_norm_440_0_deg, figur
 field_plotting.plot_field_mesh_array(z_array, x_array, diff_norm_440_0_deg, figure = subfigs[1], axes= axes_right,
                                      norm = diff_normalization, cmap ="seismic", cbar_label=r"$\Delta|E_{||}|^2$ (normed)",
                                      row_titles=row_titles, col_titles=[col_titles[2]])
-total_figure.savefig("440_nm_field_distributions_cavity_0_deg.pdf",dpi = 500)
+total_figure.savefig("440_nm_field_distributions_cavity_0_deg"+fig_file_ext,dpi = 500)
 total_figure.show()
 
 total_figure = plt.figure(figsize=  (8,4))
@@ -67,7 +67,7 @@ field_plotting.plot_field_mesh_array(z_array, x_array, int_norm_440_21_deg, figu
 field_plotting.plot_field_mesh_array(z_array, x_array, diff_norm_440_21_deg, figure = subfigs[1], axes= axes_right,
                                      norm = diff_normalization, cmap ="seismic", cbar_label=r"$\Delta|E_{||}|^2$ (normed)",
                                      row_titles=row_titles, col_titles=[col_titles[2]])
-total_figure.savefig("440_nm_field_distributions_cavity_21_deg.pdf",dpi = 500)
+total_figure.savefig("440_nm_field_distributions_cavity_21_deg"+fig_file_ext,dpi = 500)
 total_figure.show()
 
 make_source_files = True

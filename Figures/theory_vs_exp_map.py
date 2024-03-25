@@ -85,7 +85,7 @@ y_list = [.88,.88,.92]
 for i in range(2):
     ax[i].text(.05,y_list[i],sub_tit_str[i],transform=ax[i].transAxes,fontsize=7,weight = "bold")
 
-fig.savefig("figure_theory_exp_comparison_v3.pdf",dpi=500)
+fig.savefig("figure_theory_exp_comparison_v3.png",dpi=500)
 fig.show()
 
 make_source_files = True

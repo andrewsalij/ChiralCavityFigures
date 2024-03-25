@@ -11,7 +11,7 @@ import berreman_mueller as bm
     shared colorbar
 '''
 
-
+fig_file_ext = ".png"
 data_dir = os.sep.join((os.getcwd(),"MuellerMat_Data"))
 #DATA LOADING
 plt.rcParams.update({'font.size': 7,'axes.unicode_minus':False})
@@ -79,7 +79,7 @@ cbar.set_label(r"Value ($M_{00}$ normalized)")
 
 fig_dir = os.getcwd()
 fig.subplots_adjust(wspace = 0.12,hspace = 0.28,left = .15,right = 0.78,top  =.93)
-fig.savefig(os.sep.join((fig_dir,"figure_s2_mueller_mat_450nm.pdf")),dpi = 600)
+fig.savefig(os.sep.join((fig_dir,"figure_s2_mueller_mat_450nm"+fig_file_ext)),dpi = 600)
 fig.show()
 
 make_source_files = True

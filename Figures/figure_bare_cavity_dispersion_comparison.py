@@ -6,6 +6,7 @@ import pandas as pd
 Construction of figure that compares theoretical and experiemental maps 
 Note that "Backward" and "Forward" are opposite of "Front and "Back"
 '''
+fig_file_ext = ".png"
 
 plt.rcParams.update({'font.size': 7,'axes.unicode_minus':False})
 create_source_files = True
@@ -219,5 +220,5 @@ cax = fig.add_axes([0.16, 0.94, 0.8, 0.05])
 cbar = fig.colorbar(mappable=mappable_image,cax =cax,orientation = 'horizontal')
 cbar.set_label(g_factor_title,fontsize = 7,labelpad=  2)
 fig.subplots_adjust(wspace=.08, hspace=.12,top = .82,bottom = .08,left = .08,right = .98)
-fig.savefig("bare_cavity_dispersion_comparison_v4.pdf",bbox_inches='tight', pad_inches=0.01,dpi=500)
+fig.savefig("bare_cavity_dispersion_comparison_v4"+fig_file_ext,bbox_inches='tight', pad_inches=0.01,dpi=500)
 fig.show()

@@ -13,6 +13,8 @@ Final tuning of input parameters
 USE THIS FOR FIGURES IN SI 
 '''
 
+file_ext = ".png"
+
 plt.rcParams.update({'font.size': 7,'axes.unicode_minus':False})
 
 plot_goldsmith = False
@@ -88,7 +90,7 @@ ax.plot(x,y3,label = "LDLB",color  ='black',linestyle = "dashed")
 ax.set_xlim(270,520)    
 fig.legend(fontsize = 7,loc=  "lower right",bbox_to_anchor= (.95,.15))
 plt.tight_layout()
-fig.savefig("ptpo_cd_tuning.pdf",dpi = 500)
+fig.savefig("ptpo_cd_tuning"+file_ext,dpi = 500)
 fig.show()
 
 if (create_source_files):
@@ -115,7 +117,7 @@ if (show_lin_abs):
     ax.set_xlim(270, 520)
     fig.legend(fontsize=7,loc = "upper right",bbox_to_anchor = (.98,.98,0,0))
     fig_title = "final_fit_film_v3_lin_abs"
-    fig.savefig(fig_title+".pdf",dpi = 500)
+    fig.savefig(fig_title+file_ext,dpi = 500)
     fig.show()
 
     if create_source_files:
@@ -137,7 +139,7 @@ if (show_lin_abs):
     fig.legend(fontsize=7,loc = "upper right",bbox_to_anchor = (.98,.98,0,0))
     plt.tight_layout()
     fig_title = "final_fit_solution_v2_lin_abs"
-    fig.savefig(fig_title+".pdf",dpi = 500)
+    fig.savefig(fig_title+file_ext,dpi = 500)
     fig.show()
 
     if create_source_files:
@@ -160,7 +162,7 @@ if make_ldlb_only_figure:
     ax.set_xlim(270, 520)
     fig.legend(fontsize=7, loc="lower right", bbox_to_anchor=(.95, .15))
     plt.tight_layout()
-    fig.savefig("ptpo_ldlb_only"+".pdf", dpi=500)
+    fig.savefig("ptpo_ldlb_only"+file_ext, dpi=500)
     fig.show()
 
 
