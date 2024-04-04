@@ -6,6 +6,14 @@ import pandas as pd
 
 import berreman_mueller as bm
 
+'''
+Comparison between theory and experimental spatial CD maps.
+An important distinction between these two maps is that the experiment is centered at each pixel, so
+5 mm is covered over 11 elements with spaces of .5 mm in between. Theory, which cares about the edges and areas 
+of the pixels for the Ising model, is 100 by 100 pixels over 5 mm and it is the edges
+--classic fence sections vs fence posts! 
+'''
+
 plt.rcParams.update({'font.size': 7,'axes.unicode_minus':False})
 
 cwd = os.getcwd()
