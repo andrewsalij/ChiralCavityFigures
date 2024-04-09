@@ -29,7 +29,7 @@ ising_results = np.load("metropolis_100transits_results.npy")
 averaged_ising_results = np.average(ising_results,axis=1) #negative spin,positive spin, average spi
 std_ising_results = np.std(ising_results,axis=1)
 if (plot_style =="cd_mdeg"):
-    # ptpo_angle_resolved.py, runnipng np.min(cd[20:,5])
+    # ptpo_angle_resolved.py, running np.min(cd[20:,5])
     # note that sign convention changes
     scaling_factor = -768.79
 
