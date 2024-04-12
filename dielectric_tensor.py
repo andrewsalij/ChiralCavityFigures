@@ -344,7 +344,9 @@ def multiply_quaternion(quat_b,quat_a):
     '''
     x_a,y_a,z_a,w_a = quat_a
     x_b,y_b,z_b,w_b = quat_b
-    return np.array([w_a*x_b+x_a*w_b+y_a*z_b-z_a*y_b,w_a*y_b-x_a*z_b+y_a*w_a+z_a*x_b,w_a*z_b+x_a*y_b-y_a*x_b*z_a*w_b,
+    return np.array([w_a*x_b+x_a*w_b+y_a*z_b-z_a*y_b,
+                     w_a*y_b-x_a*z_b+y_a*w_a+z_a*x_b,
+                     w_a*z_b+x_a*y_b-y_a*x_b+z_a*w_b,
                      w_a*w_b-x_a*x_b-y_a*y_b-z_a*z_b])
 
 
