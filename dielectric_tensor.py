@@ -82,7 +82,7 @@ class LINEAR_OPTICS():
         self.absorbance = absorbance
 
     def ldlb(self):
-        '''Returns LDLB :1/2(LD'*LB-LD*LB')'''
+        '''Returns LDLB :1/2(LD*LB'-LD'*LB)'''
         ldlb = 0.5 * (self.ld * self.lbp - self.ldp * self.lb)
         return ldlb
     def select_by_index(self,idx):
@@ -106,6 +106,7 @@ def create_lineshape(a,b,gamma):
     '''
     warn("create_lineshape() is deprecated. Use create_molecular_property_lineshape() instead")
     return b*create_molecular_property_lineshape(a,b,gamma)
+lorenzian = create_lineshape
 
 def create_molecular_property_lineshape(spec,omega_n,gamma_n):
     '''
@@ -116,6 +117,8 @@ def create_molecular_property_lineshape(spec,omega_n,gamma_n):
     '''
     lineshape = 1/(omega_n**2-spec**2-1j*gamma_n*spec)
     return lineshape
+
+
 
 def create_dipole_matrix_polar_2D(magnitude_array,theta_array):
     '''
@@ -157,13 +160,17 @@ def center_angle_array(angle_array,index = 0,angle = 0.0):
     is set to the chosen angle. Does not perform modulo operations, which must
     be handled separately
     :param angle_array: np.ndarray
-    :param index: np.int (default 0)
+    :param index: int (default 0)
     :param angle: np.float (default 0.0)
     :return:
     '''
     offset = angle_array[index]-angle
     new_array = angle_array-offset
     return new_array
+
+def rad_to_degree(array):
+    '''Converts radians to degrees'''
+    return array/(np.pi)*180
 
 def get_molecular_property_tensor(excitonic_energy_array,energy_spectrum,dipole_matrix,gamma_array,unit_defs= unit_defs_base,
                                   tensor_type = "elec",magnetic_dipole_matrix = None):
@@ -337,7 +344,7 @@ def multiply_quaternion(quat_b,quat_a):
     '''
     x_a,y_a,z_a,w_a = quat_a
     x_b,y_b,z_b,w_b = quat_b
-    return np.array([w_a*x_b+x_a*w_b-y_a*z_b-z_a*y_b,w_a*y_b-x_a*z_b+y_a*w_a+z_a*x_b,w_a*z_b+x_a*y_b-y_a*x_b*z_a*w_b,
+    return np.array([w_a*x_b+x_a*w_b+y_a*z_b-z_a*y_b,w_a*y_b-x_a*z_b+y_a*w_a+z_a*x_b,w_a*z_b+x_a*y_b-y_a*x_b*z_a*w_b,
                      w_a*w_b-x_a*x_b-y_a*y_b-z_a*z_b])
 
 
@@ -441,11 +448,11 @@ def order_3D_basis(orthonormal_basis):
                 if (np.less_equal(orthonormal_basis[:,k]-error,cross_product_matrix[i,j,:]).all() & np.greater_equal(orthonormal_basis[:,k]+error,cross_product_matrix[i,j,:]).all()):
                     ordered_sets[i,:] = np.array([i,j])
     x_index = np.array(np.where(orthonormal_basis[0,:] == np.max(orthonormal_basis[0,:])))[0]
-    y_index = np.int(ordered_sets[x_index,1])
-    z_index = np.int(ordered_sets[y_index,1])
+    y_index = int(ordered_sets[x_index,1])
+    z_index = int(ordered_sets[y_index,1])
     indices = np.array([x_index,y_index,z_index]).astype(int)
     for i in range(0,3):
-        ordered_basis[:,i] = orthonormal_basis[:,np.int(indices[i])]
+        ordered_basis[:,i] = orthonormal_basis[:,int(indices[i])]
     return indices, ordered_basis
 
 def solve_tensor(tensor):
@@ -523,9 +530,12 @@ def eigen_portion_xy(matrix):
     "Extracts eigenvalues and rotated submatrix from matrix"
     submatrix = matrix[:2,:2]
     vals, vecs = np.linalg.eig(submatrix)
-    total_rotation_matrix = np.zeros((3,3))
-    total_rotation_matrix[:2,:2] = vecs
-    total_rotation_matrix[2,2] = 1
+    if (np.size(matrix,axis = 0)>2):
+        total_rotation_matrix = np.zeros((3,3))
+        total_rotation_matrix[2,2] = 1
+    else:
+        total_rotation_matrix = np.zeros((2,2))
+    total_rotation_matrix[:2, :2] = vecs
     return vals, total_rotation_matrix
 
 def diagonalize_matrix_stack(matrix_stack,dtype = np.float64,axis_set = None,to_reorder = True):
@@ -544,7 +554,8 @@ def diagonalize_matrix_stack(matrix_stack,dtype = np.float64,axis_set = None,to_
             vals, vecs= np.linalg.eig(matrix_stack[:,:,i])
         else:
             vals, vecs= eigen_portion_xy(matrix_stack[:,:,i])
-            vals = np.hstack((vals,matrix_stack[2,2,i]))
+            if (np.size(matrix_stack,axis = 0)>2):
+                vals = np.hstack((vals,matrix_stack[2,2,i]))
         if (to_reorder):
             idx = vals.argsort()[::-1]
             vals = vals[idx]
@@ -755,7 +766,7 @@ def linear_optics_from_dielectric_tensor(dielectric_tensor,spectrum,to_print = F
     :param kwargs: dict
     :return: LINEAR_OPTICS()
     '''
-    length_over_c = 1
+    length_over_c = float(1)
     for key, value in kwargs.items():
         if key == "length_over_c":
             length_over_c = value
@@ -1086,7 +1097,7 @@ def vibronic_dressing(energy_array_init,vib_split_array,indices_to_dress):
     if (np.size(vib_split_array) != np.size(indices_to_dress)):
         print("Error: indices to dress and vib split array sizes must be identical")
         return energy_array_init
-    new_size = np.int(np.size(e_array)+2*np.size(indices_to_dress))
+    new_size = int(np.size(e_array)+2*np.size(indices_to_dress))
     new_e_array = np.zeros(new_size)
     counter = 0
     for i in range(0,np.size(e_array)):
@@ -1104,7 +1115,8 @@ def vibronic_dressing(energy_array_init,vib_split_array,indices_to_dress):
     return new_e_array
 
 def fc_factor(huang_rhys,modes):
-    '''Franck-Condon factor for array of vibronic modes and scalar Huang-Rhys factor. See (2.7) in Excitonic and exciton-phonon interactions in molecular aggregates, Roel Tempelaar'''
+    '''Franck-Condon factor for array of vibronic modes and scalar Huang-Rhys factor
+    See (2.7) in Excitonic and exciton-phonon interactions in molecular aggregates, Roel Tempelaar'''
     return np.sqrt((huang_rhys**(2*modes)*np.exp(-huang_rhys**2))/(factorial(modes)))
 
 def vib_spec_osc_str(electronic_osc_strength,modes_array,huang_rhys):
@@ -1211,35 +1223,7 @@ def tensor_stack_coordinate_transform(tensor,coordinate_transform):
     return np.einsum("ijl,jkl->ikl", coordinate_transform,
                                      np.einsum("ijl,jkl->ikl", tensor, transform_inverse))
 
-def characteristic_aborption_lengths(dielectric_tensor,spectrum):
-    '''
-    Extracts absorption lengths--largely redundant
-    :param dielectric_tensor: np.ndarray (1D)
-    :param spectrum: np.ndarray (1D)
-    :return: (abs,angles,n) (all np.ndarray)
-    '''
-    diagonalized_dielectric_real,rotation_matrix_real = diagonalize_matrix_stack(dielectric_tensor.real,axis_set = "xy",to_reorder = False)
-    dielectric_rotated_no_birefringence = tensor_stack_coordinate_transform(dielectric_tensor,rotation_matrix_real)
-    dielectric_im_rotated_no_biref = extract_diagonal_tensor(dielectric_rotated_no_birefringence.imag)
-    refractive_index_no_biref = extract_diagonal_tensor(get_refractive_index_tensor(dielectric_rotated_no_birefringence).real)
-    spectrum_tiled = np.tile(spectrum,(np.size(refractive_index_no_biref,axis =0),1))
-    abs_no_biref = spectrum_tiled*dielectric_im_rotated_no_biref/refractive_index_no_biref
-    angles = rotation_matrix_3D_to_angles(rotation_matrix_real)
-    return abs_no_biref, angles, refractive_index_no_biref
 
-def characteristic_aborption_lengths_no_rotation(dielectric_tensor,spectrum):
-    '''
-    Extracts abs w/o rotation--largely redundant
-    :param dielectric_tensor: np.ndarray (1D)
-    :param spectrum: np.ndarray (1D)
-    :return: (abs,angles,n) (all np.ndarray)
-    '''
-    refractive_index_tensor = get_refractive_index_tensor(dielectric_tensor)
-    refractive_index = extract_diagonal_tensor(refractive_index_tensor.real)
-    dielectric_im = extract_diagonal_tensor(dielectric_tensor.imag)
-    spectrum_tiled = np.tile(spectrum,(np.size(refractive_index,axis =0),1))
-    abs = spectrum_tiled*dielectric_im/refractive_index.real
-    return abs, refractive_index
 
 '''
 The below functions come form Molecular Light Scattering and Optical Activity 
@@ -1248,11 +1232,11 @@ tensorial components for a system. To maintain consistency and for
 simplicity of construction, we borrow this method here for CB and CD
 
 For symbols, Barron uses Δθ = ωl/2c (n_l-n_r) for optical rotation (circular birefrigence)
-and η = ωl/2c (n'_l-n'_r) for ellipcitity (circular dichroism) where n' is the imaginary
+and η = ωl/2c (n'_l-n'_r) for ellipticity (circular dichroism) where n' is the imaginary
 part of the refractive index 
 
 In this code base, terms are defined as CB (or β_3)  = ωl/2c (n_l-n_r)
-and CD (or β]d_3)  = ωl/2c (n'_l-n'_r) in accordence with symbols for linear dichroism
+and CD (or β]d_3)  = ωl/2c (n'_l-n'_r) in accordance with symbols for linear dichroism
 (LD) and linear birefringence (LB) 
 '''
 
@@ -1595,7 +1579,7 @@ def strain_tensor_hookes_law_isotropic_from_stress(stress_tensor,stiffness_matri
 def create_stiffness_matrix(youngs_modulus,poissons_ratio):
     '''
     Creates the stiffness matrix (4 dim tensor) that relates stress tensor to strain
-    tensor.
+    tensor
     See Atanackovic, T. M., & Guran, A. (2000). Theory of elasticity for scientists and engineers. Springer Science & Business Media.
     :param youngs_modulus:
     :param poissons_ratio:
